@@ -1,23 +1,19 @@
 const mongoose = require('mongoose');
 
-const commentSchema = new mongoose.Schema(
+const favoriteSchema = new mongoose.Schema(
   {
-    text: {
-      type: String,
-      required: true,
-      maxlength: 1000,
-    },
-
     user: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
 
     post: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Post",
       required: true,
+      index: true,
     },
   },
   {
@@ -25,4 +21,7 @@ const commentSchema = new mongoose.Schema(
   }
 );
 
-module.exports = mongoose.model('Comment', commentSchema)
+// Ensure a user can only favorite a post once
+favoriteSchema.index({ user: 1, post: 1 }, { unique: true });
+
+module.exports = mongoose.model('Favorite', favoriteSchema)

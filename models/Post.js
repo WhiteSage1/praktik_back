@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const postSchema = new mongoose.Schema(
   {
@@ -26,11 +26,13 @@ const postSchema = new mongoose.Schema(
     currency: {
       type: String,
       default: "EUR",
+      uppercase: true,
+      trim: true,
     },
 
     category: {
       type: String,
-      required: true,
+      // required: true,
       enum: [
         "Electronics",
         "Cars",
@@ -56,10 +58,12 @@ const postSchema = new mongoose.Schema(
       },
     ],
 
+    // OWNER OF POST
     seller: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",
       required: true,
+      index: true,
     },
 
     comments: [
@@ -73,17 +77,21 @@ const postSchema = new mongoose.Schema(
       country: {
         type: String,
         default: "",
+        trim: true,
       },
 
       city: {
         type: String,
         default: "",
+        trim: true,
       },
     },
 
     tags: [
       {
         type: String,
+        lowercase: true,
+        trim: true,
       },
     ],
 
@@ -97,10 +105,12 @@ const postSchema = new mongoose.Schema(
       default: 0,
     },
 
+    // active | sold | hidden | deleted
     status: {
       type: String,
-      enum: ["active", "sold", "deleted", "hidden"],
+      enum: ["active", "sold", "hidden", "deleted"],
       default: "active",
+      index: true,
     },
 
     isApproved: {
@@ -128,4 +138,7 @@ const postSchema = new mongoose.Schema(
   }
 );
 
-export default mongoose.model("Post", postSchema);
+// SEARCH INDEXES
+postSchema.index({ title: "text", description: "text" });
+
+module.exports = mongoose.model('Post', postSchema)

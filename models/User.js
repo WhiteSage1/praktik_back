@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
     username: {
@@ -8,6 +8,7 @@ const userSchema = new mongoose.Schema({
       trim: true,
       minlength: 5,
       maxlength: 30,
+      index: true,
     },
 
     email: {
@@ -16,6 +17,7 @@ const userSchema = new mongoose.Schema({
       unique: true,
       lowercase: true,
       trim: true,
+      index: true,
     },
 
     password: {
@@ -41,51 +43,43 @@ const userSchema = new mongoose.Schema({
     },
 
     location: {
-      country: String,
-      city: String,
+      country: {
+        type: String,
+        default: "",
+        trim: true,
+      },
+
+      city: {
+        type: String,
+        default: "",
+        trim: true,
+      },
     },
 
-    roles: [{
+    role: {
       type: String,
       enum: ["user", "admin"],
       default: "user",
-    }],
+    },
 
     isVerified: {
       type: Boolean,
       default: false,
     },
 
-    isBanned: {
-      type: Boolean,
-      default: false,
+    // active | suspended | banned | deleted
+    status: {
+      type: String,
+      enum: ["active", "suspended", "banned", "deleted"],
+      default: "active",
+      index: true,
     },
 
-    banExpiresAt: {
+    // temporary suspension expiration
+    suspensionExpiresAt: {
       type: Date,
       default: null,
     },
-
-    posts: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
-      },
-    ],
-
-    favorites: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
-      },
-    ],
-
-    soldItems: [
-      {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Post",
-      },
-    ],
 
     refreshToken: {
       type: String,
@@ -94,6 +88,7 @@ const userSchema = new mongoose.Schema({
 
     lastLogin: {
       type: Date,
+      default: null,
     },
   },
   {
@@ -101,4 +96,4 @@ const userSchema = new mongoose.Schema({
   }
 );
 
-export default mongoose.model("User", userSchema);
+module.exports = mongoose.model('User', userSchema)
