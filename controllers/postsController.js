@@ -17,7 +17,7 @@ const getAllPosts = asyncHandler(async (req, res) => {
 // @route POST /posts
 // @access Private
 const createNewPost = asyncHandler(async (req, res) => {
-    const { sellerId, title, description, price, category, condition, images, location, tags, contactPhone } = req.body
+    const { sellerId, title, description, price, currency, category, condition, images, location, tags, contactPhone } = req.body
 
     // Confirm data
     if (!sellerId || !title || !description || price === undefined) {
@@ -55,7 +55,19 @@ const createNewPost = asyncHandler(async (req, res) => {
         return res.status(400).json({ message: 'Contact phone must be a string' })
     }
 
-    const postObject = { title, description, price, seller, category, condition, images, location, tags, contactPhone }
+    const postObject = {
+        title,
+        description,
+        price,
+        currency: typeof currency === 'string' && currency.trim() ? currency.trim().toUpperCase() : 'EUR',
+        seller,
+        category,
+        condition,
+        images,
+        location,
+        tags,
+        contactPhone,
+    }
 
     // Create and store new post
     const post = await Post.create(postObject)
@@ -71,7 +83,8 @@ const createNewPost = asyncHandler(async (req, res) => {
 // @access Private
 const updatePost = asyncHandler(async (req, res) => {
     // Implementation for updating a post goes here
-    const { id, title, description, price, category, condition, images, location, tags, contactPhone } = req.body
+    const { id, title, description, price, currency, category, condition, images, location, tags, contactPhone, negotiable } = req.body
+    // comments,
 
     const post = await Post.findById(id).exec()
     if (!post) {
@@ -100,6 +113,10 @@ const updatePost = asyncHandler(async (req, res) => {
         post.price = price
     }
 
+    if (currency !== undefined) {
+        post.currency = currency
+    }
+
     if (category !== undefined) {
         if (!["Electronics", "Cars", "Clothing", "Furniture", "Real Estate", "Books", "Sports", "Toys", "Other"].includes(category)) {
             return res.status(400).json({ message: 'Invalid category' })
@@ -121,6 +138,13 @@ const updatePost = asyncHandler(async (req, res) => {
         post.images = images
     }
 
+    // if (comments !== undefined) {
+    //     if (!Array.isArray(comments)) {
+    //         return res.status(400).json({ message: 'Comments must be an array of comment IDs' })
+    //     }
+    //     post.comments = comments
+    // }
+
     if (location !== undefined ) { // Update location if provided
         if (!location.country || !location.city) {
             return res.status(400).json({ message: 'Both country and city are required for location' })
@@ -138,6 +162,10 @@ const updatePost = asyncHandler(async (req, res) => {
 
     if (contactPhone !== undefined) { 
         post.contactPhone = contactPhone
+    }
+
+    if (negotiable !== undefined) {
+        post.negotiable = negotiable
     }
 
     const updatedPost = await post.save()

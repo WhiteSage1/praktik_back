@@ -14,6 +14,25 @@ const getAllUsers = asyncHandler(async (req, res) => {
     res.json(users)
 })
 
+// @desc Get one user
+// @route GET /users/:id
+// @access Private
+const getUserById = asyncHandler(async (req, res) => {
+    const { id } = req.params
+
+    if (!id) {
+        return res.status(400).json({ message: 'User ID required' })
+    }
+
+    const user = await User.findById(id).select('-password').lean()
+
+    if (!user) {
+        return res.status(404).json({ message: 'User not found' })
+    }
+
+    res.json(user)
+})
+
 // @desc Create new user
 // @route POST /users
 // @access Private
@@ -121,6 +140,7 @@ const deleteUser = asyncHandler(async (req, res) => {
 
 module.exports = {
     getAllUsers,
+    getUserById,
     createNewUser,
     updateUser,
     deleteUser

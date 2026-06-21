@@ -1,0 +1,8 @@
+NODE_ENV=development
+DATABASE_URI=mongodb+srv://PostStore:bJBxAbjSS89ZvffH@store.mpyswxa.mongodb.net/PostStoreDB?retryWrites=true&w=majority
+ACCESS_TOKEN_SECRET=2dec1e1e32738da447e32f41be78a375681ff6b38abe70ddd14c1e06f35800e449c89de
+723fb7b0f1e897dd0a9159c9be473abf12162fc8fabe09f39f3a0264f
+REFRESH_TOKEN_SECRET=edd8ca78f5a42fdd4349b2549ca786da29eaabc3359464d35f85f4d20d2e550a47c073e
+776f058403cc3d7a5da9b9b1dbf06ed3b4848db54b9d2b14105b765d0
+
+# require('crypto').randomBytes(64).toString('hex')

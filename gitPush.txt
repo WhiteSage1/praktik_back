@@ -1,0 +1,16 @@
+simple push:
+
+git status
+git add .
+git commit -m "Describe your changes"
+git push
+
+Then copied from a diferent repository and now want to push to mine:
+
+git init
+git remote remove origin
+git add .
+git commit -m "First commit"
+git branch -M main
+git remote add origin <your-repository-url>
+git push -u origin main
